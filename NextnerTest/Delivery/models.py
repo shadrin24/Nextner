@@ -5,7 +5,7 @@ class Delivery(models.Model):
     item_name = models.TextField(verbose_name='Название товара')
     type_item = models.ForeignKey('Type', on_delete=models.PROTECT, verbose_name='Тип товара')
     delivery_date = models.DateField(verbose_name='Дата доставки')
-    file = models.FileField(verbose_name='Файл')
+    file = models.FileField(verbose_name='Файл', blank=True)
     address_delivery = models.ManyToManyField('Address', verbose_name='Адрес доставки')
 
     def __str__(self):
