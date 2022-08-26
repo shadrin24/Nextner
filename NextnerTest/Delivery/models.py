@@ -5,11 +5,14 @@ class Delivery(models.Model):
     item_name = models.TextField(verbose_name='Название товара')
     type_item = models.ForeignKey('Type', on_delete=models.PROTECT, verbose_name='Тип товара')
     delivery_date = models.DateField(verbose_name='Дата доставки')
-    file = models.FileField(verbose_name='Файл', blank=True)
+    file = models.FileField(upload_to='files/', verbose_name='Файл', blank=True)
     address_delivery = models.ManyToManyField('Address', verbose_name='Адрес доставки')
 
     def __str__(self):
         return self.item_name
+
+    def size_mb(self):
+        return round(self.file.size/1024/1024, 2)
 
     class Meta:
         verbose_name = 'Доставка товара'

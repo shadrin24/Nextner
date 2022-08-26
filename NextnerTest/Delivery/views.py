@@ -8,6 +8,6 @@ def index(request):
     delivery = Delivery.objects.all()
     context = {
         'delivery': delivery,
-        'title': 'Список товаров'
+        'title': 'Список товаров',
     }
     return render(request, 'Delivery/index.html', context)
