@@ -26,33 +26,13 @@
 </nav>
 
 <div class="container">
-    <h1>{{ title }}</h1>
-    <div class="row">
-        <div class="col-md-12">
-            {% for item in delivery %}
-            <div class="card text-center">
-                <div class="card-header">
-                    Дата доставки: {{ item.delivery_date }}
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">{{ item.item_name }}</h5>
-                    <p class="card-text">Тип: {{ item.type_item }}</p>
-                    <p class="card-text">Адрес доставки:
-                        {% for address in item.address_delivery.all %}
-                        {{ address }}
-                        {% endfor %}
-                    </p>
-                    {% if item.file %}
-                    <a href="{{ item.file.url }}" class="btn btn-primary">Файл {{ item.size_mb }} Мб</a>
-                    {% endif %}
-                </div>
-                <div class="card-footer text-muted">
-                    Осталось сколько-то дней
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+    <h1>Добавить доставку</h1>
+
+    <form action="{% url 'add_delivery' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary btn-block">Добавить доставку</button>
+    </form>
 </div>
 
 
