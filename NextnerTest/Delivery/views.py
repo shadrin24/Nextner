@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.core.files.storage import FileSystemStorage
 
 from .models import Delivery
 from .forms import DeliveryForm
@@ -14,16 +15,16 @@ def index(request):
 
 
 def add_delivery(request):
-    if request.method == 'POST':
-        form = DeliveryForm(request.POST)
+    context = {'title': 'Список товаров', }
+    if request.method == 'POST' and request.FILES:
+        print(request.FILES)
+        form = DeliveryForm(request.POST, request.FILES)
         if form.is_valid():
             print('post')
-            delivery = form.save()
-            return redirect(delivery)
+            form.save()
+            return redirect('home')
     else:
         form = DeliveryForm()
-    context = {
-        'title': 'Список товаров',
-        'form': form,
-    }
+        context['form'] = form
     return render(request, 'Delivery/add_delivery.html', context)
+
