@@ -6,7 +6,7 @@ class Delivery(models.Model):
     type_item = models.ForeignKey('Type', on_delete=models.PROTECT, verbose_name='Тип товара')
     delivery_date = models.DateField(verbose_name='Дата доставки')
     file = models.FileField(upload_to='files/', verbose_name='Файл', blank=True)
-    address_delivery = models.ManyToManyField('Address', verbose_name='Адрес доставки')
+    address_delivery = models.ManyToManyField('Address', verbose_name='Адрес доставки', blank=True)
 
     def __str__(self):
         return self.item_name

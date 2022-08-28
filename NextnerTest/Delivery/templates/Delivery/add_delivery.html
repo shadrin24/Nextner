@@ -30,7 +30,8 @@
 
     <form action="{% url 'add_delivery' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form_delivery.as_p }}
+        {{ form_address.as_p }}
         <button type="submit" class="btn btn-primary btn-block">Добавить доставку</button>
     </form>
 </div>
