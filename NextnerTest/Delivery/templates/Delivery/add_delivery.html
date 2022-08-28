@@ -32,6 +32,7 @@
         {% csrf_token %}
         {{ form_delivery.as_p }}
         {{ form_address.as_p }}
+        {{ form_address.management_form }}
         <button type="submit" class="btn btn-primary btn-block">Добавить доставку</button>
     </form>
 </div>

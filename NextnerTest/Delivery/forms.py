@@ -14,7 +14,6 @@ class DeliveryForm(forms.ModelForm):
             'type_item': forms.Select(attrs={'class': 'form-control'}),
             'delivery_date': forms.SelectDateWidget(attrs={'class': 'form-control'}),
             'file': forms.FileInput(attrs={'class': 'form-control'}),
-            # 'address_delivery': forms.HiddenInput(attrs={'class': 'form-control'}),
         }
 
 
@@ -27,5 +26,7 @@ class AddressForm(forms.ModelForm):
         }
 
 
-AddressFormSet = modelformset_factory(Address, form=AddressForm)
+def address_formset(extra):
+    address_form_set = modelformset_factory(Address, form=AddressForm, extra=extra)
+    return address_form_set
 

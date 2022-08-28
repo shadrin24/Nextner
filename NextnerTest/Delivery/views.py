@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
 
 from .models import Delivery, Address
-from .forms import DeliveryForm, AddressForm
+from .forms import DeliveryForm, AddressForm, address_formset
 
 
 def index(request):
@@ -16,40 +16,20 @@ def index(request):
 
 def add_delivery(request):
     context = {'title': 'Список товаров', }
-    if request.method == 'POST' and request.FILES:
-        print(request.FILES)
+    addresses_count = 10
+    if request.method == 'POST':
         form_delivery = DeliveryForm(request.POST, request.FILES)
-        form_address = AddressForm(request.POST)
-        if form_delivery.is_valid() and form_address.is_valid():
-            a = form_address.save()
+        forms_address = address_formset(addresses_count)(request.POST)
+        if form_delivery.is_valid() and forms_address.is_valid():
             b = form_delivery.save()
-            b.address_delivery.add(a)
-            return redirect('home')
-    elif request.method == 'POST':
-        form_delivery = DeliveryForm(request.POST)
-        form_address = AddressForm(request.POST)
-        if form_delivery.is_valid() and form_address.is_valid():
-            a = form_address.save()
-            b = form_delivery.save()
-            b.address_delivery.add(a)
+            for form in forms_address:
+                a = form.save()
+                b.address_delivery.add(a)
             return redirect('home')
     else:
         form_delivery = DeliveryForm()
-        form_address = AddressForm()
+        forms_address = address_formset(addresses_count)(queryset=Address.objects.none())
         context['form_delivery'] = form_delivery
-        context['form_address'] = form_address
+        context['form_address'] = forms_address
     return render(request, 'Delivery/add_delivery.html', context)
 
-
-# def add_address(request):
-#     context = {}
-#     if request.method == 'POST':
-#         form = AddressForm(request.POST)
-#         if form.is_valid():
-#             print('post')
-#             form.save()
-#             return redirect('home')
-#     else:
-#         form = AddressForm()
-#         context['form'] = form
-#     return render(request, 'Delivery/add_delivery.html', context)
