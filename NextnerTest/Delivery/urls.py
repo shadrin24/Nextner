@@ -3,5 +3,5 @@ from Delivery.views import *
 
 urlpatterns = [
     path('', ListItemsView.as_view(), name='home'),
-    path('add_delivery', add_delivery, name='add_delivery')
+    path('add_delivery', AddDelivery.as_view(), name='add_delivery')
 ]

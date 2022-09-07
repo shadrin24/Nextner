@@ -30,9 +30,20 @@
 
     <form action="{% url 'add_delivery' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form_delivery.as_p }}
-        {{ form_address.as_p }}
-        {{ form_address.management_form }}
+        {% for item in form %}
+            {% if forloop.counter == 1 %}
+                {{ item }}
+            {% else %}
+                {% for field in item %}
+                    {% if field.name == 'address_delivery' %}
+                    <p>{{ field }}</p>
+                    {% else %}
+                    <p>{{ field.as_hodden }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
         <button type="submit" class="btn btn-primary btn-block">Добавить доставку</button>
     </form>
 </div>
