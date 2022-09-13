@@ -1,7 +1,8 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, FormView
 from .models import Delivery, Address
-from .forms import DeliveryForm, DeliveryFormSet
+from .forms import DeliveryForm, AddressForm, AddressFormSet
 
 
 class ListItemsView(ListView):
@@ -15,37 +16,30 @@ class ListItemsView(ListView):
         return context
 
 
-class AddDelivery(FormView):
-    form_class = DeliveryFormSet
+class AddDelivery(CreateView):
+    model = Delivery
+    form_class = DeliveryForm
     template_name = 'Delivery/add_delivery.html'
-    success_url = 'home'
+    success_url = '/'
 
+    def get_context_data(self, **kwargs):
+        context = super(AddDelivery, self).get_context_data(**kwargs)
+        context['formset'] = AddressFormSet()
+        # context['delivery_form'] = DeliveryForm()
+        return context
 
-# def index(request):
-#     delivery = Delivery.objects.all()
-#     context = {
-#         'delivery': delivery,
-#         'title': 'Список товаров',
-#     }
-#     return render(request, 'Delivery/index.html', context)
+    def post(self, request, *args, **kwargs):
+        formset = AddressFormSet(request.POST)
+        delivery_form = DeliveryForm(request.POST, request.FILES)
+        if formset.is_valid() and delivery_form.is_valid():
+            return self.form_valid(formset, delivery_form)
+        else:
+            return HttpResponseRedirect('/error')
 
-
-# def add_delivery(request):
-#     context = {'title': 'Список товаров', }
-#     addresses_count = 10
-#     if request.method == 'POST':
-#         form_delivery = DeliveryForm(request.POST, request.FILES)
-#         forms_address = address_formset(addresses_count)(request.POST)
-#         if form_delivery.is_valid() and forms_address.is_valid():
-#             b = form_delivery.save()
-#             for form in forms_address:
-#                 a = form.save()
-#                 b.address_delivery.add(a)
-#             return redirect('home')
-#     else:
-#         form_delivery = DeliveryForm()
-#         forms_address = address_formset(addresses_count)(queryset=Address.objects.none())
-#         context['form_delivery'] = form_delivery
-#         context['form_address'] = forms_address
-#     return render(request, 'Delivery/add_delivery.html', context)
-
+    def form_valid(self, formset, delivery_form):
+        delivery = delivery_form.save()
+        for form in formset:
+            if form.cleaned_data:
+                address = form.cleaned_data['address_delivery']
+                delivery.address_delivery.add(address)
+        return HttpResponseRedirect('/')
